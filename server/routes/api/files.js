@@ -1,7 +1,5 @@
 let router = require('express').Router();
-let path = require('path');
-let fs = require('fs');
-let formidable = require('formidable');
+let multiparty = require('multiparty');
 let storageService = require('../../services/storageService');
 
 router.get('/analyze', (req, res) => {
@@ -10,33 +8,53 @@ router.get('/analyze', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  // create an incoming form object
-  let form = new formidable.IncomingForm();
+  let form = new multiparty.Form();
 
-  // specify that we want to allow the user to upload multiple files in a single request
-  form.multiples = true;
-
-  // store all uploads in the /uploads directory
-  form.uploadDir = path.join(__dirname, '../../../uploads');
-
-  // every time a file has been uploaded successfully,
-  // rename it to it's original name
-  form.on('file', function(field, file) {
-    fs.rename(file.path, path.join(form.uploadDir, file.name), () => {});
-    storageService.uploadFileFromPath(path.join(form.uploadDir, file.name));
-  });
-
-  // log any errors that occur
+  // Errors may be emitted
+  // Note that if you are listening to 'part' events, the same error may be
+  // emitted from the `form` and the `part`.
   form.on('error', function(err) {
-    console.log('An error has occured: \n' + err);
+    console.log('Error parsing form: ' + err.stack);
   });
 
-  // once all the files have been uploaded, send a response to the client
-  form.on('end', function() {
-    res.end('success');
+  // Parts are emitted when parsing the form
+  form.on('part', function(part) {
+    // You *must* act on the part by reading it
+    // NOTE: if you want to ignore it, just call "part.resume()"
+
+    if (!part.filename) {
+      // filename is not defined when this is a field and not a file
+      console.log('got field named ' + part.name);
+      // ignore field's content
+      part.resume();
+    }
+
+    if (part.filename) {
+      let buffers = [];
+      part.on('data', function(buffer) {
+        buffers.push(buffer);
+      });
+
+      part.on('end', function() {
+        let buffer = Buffer.concat(buffers);
+        storageService.transcribeContents(buffer);
+        storageService.uploadFileFromBuffer(buffer, 'test1');
+      });
+      part.resume();
+    }
+
+    part.on('error', function(err) {
+      // decide what to do
+    });
   });
 
-  // parse the incoming request containing the form data
+  // Close emitted after form parsed
+  form.on('close', function() {
+    console.log('Upload completed!');
+    res.end('Received files');
+  });
+
+  // Parse req
   form.parse(req);
 });
 
