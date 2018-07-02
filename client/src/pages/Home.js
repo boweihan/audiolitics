@@ -19,7 +19,10 @@ class Home extends Component {
   // store all app state here for now
   state = {
     route: 'main',
-    singleFileResponse: null,
+    // singleFileResponse: null,
+    singleFileResponse: {
+      transcription: 'boop',
+    },
     singleFileLoading: false,
   };
 
@@ -45,7 +48,7 @@ class Home extends Component {
         <NavBar setRoute={this.setRoute} />
         {route === 'main' && (
           <FileUpload
-            finishUpload={this.setSingleFileResponse}
+            finishUpload={this.finishUpload}
             startUpload={this.startUpload}
             loading={singleFileLoading}
           />
