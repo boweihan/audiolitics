@@ -30,10 +30,12 @@ router.post('/', (req, res) => {
         buffers.push(buffer);
       });
 
-      part.on('end', function() {
+      part.on('end', async () => {
         let buffer = Buffer.concat(buffers);
-        storageService.transcribeContents(buffer);
-        storageService.uploadFileFromBuffer(buffer, 'test1');
+        res.json({
+          transcription: await storageService.transcribeContents(buffer),
+        });
+        // storageService.uploadFileFromBuffer(buffer, 'test1');
       });
       part.resume();
     }
@@ -46,7 +48,6 @@ router.post('/', (req, res) => {
   // Close emitted after form parsed
   form.on('close', function() {
     console.log('Upload completed!');
-    res.end('Received files');
   });
 
   // Parse req

@@ -61,13 +61,9 @@ const transcribeCloudFiles = () => {
 const transcribeContents = contents => {
   const client = new speech.SpeechClient();
   const model = 'default';
-  // const encoding = 'FLAC';
-  // const sampleRateHertz = 16000;
   const languageCode = 'en-US';
 
   const config = {
-    // encoding: encoding,
-    // sampleRateHertz: sampleRateHertz,
     languageCode: languageCode,
     model: model,
   };
@@ -75,24 +71,26 @@ const transcribeContents = contents => {
   const audio = {
     content: contents.toString('Base64'),
   };
+
   const request = {
     config: config,
     audio: audio,
   };
 
-  // Detects speech in the audio file
-  client
-    .recognize(request)
-    .then(data => {
-      const response = data[0];
-      const transcription = response.results
-        .map(result => result.alternatives[0].transcript)
-        .join('\n');
-      console.log(`Transcription: `, transcription);
-    })
-    .catch(err => {
-      console.log('ERROR:', err);
-    });
+  return new Promise((res, rej) => {
+    client
+      .recognize(request)
+      .then(data => {
+        const response = data[0];
+        const transcription = response.results
+          .map(result => result.alternatives[0].transcript)
+          .join('\n');
+        res(transcription);
+      })
+      .catch(err => {
+        rej(err);
+      });
+  });
 };
 
 module.exports = {
