@@ -1,9 +1,12 @@
 import React, { PureComponent } from 'react';
-import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import { Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 
 const styles = {
   container: {
-    padding: 10,
+    padding: 20,
+    backgroundColor: '#1f282e',
+    margin: 10,
+    borderRadius: 3,
   },
   label: {
     color: 'white',
@@ -23,7 +26,9 @@ class FileUpload extends PureComponent {
             Upload an audio file to get started
           </Label>
           <Input type="file" name="file" id="fileUpload" style={styles.input} />
-          <FormText color="muted">Valid formats are .raw, .flac, .mp3</FormText>
+          <FormText color="muted" style={styles.formText}>
+            Valid formats are .raw, .flac, .mp3
+          </FormText>
         </FormGroup>
       </Form>
     );
