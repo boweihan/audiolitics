@@ -11,3 +11,7 @@ body {
 p {
   font-family: 'Archivo Black', sans-serif !important;
 }
+
+.recharts-surface {
+  padding: 10px !important;
+}
