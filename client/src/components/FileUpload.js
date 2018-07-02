@@ -48,7 +48,7 @@ class FileUpload extends PureComponent {
       <Form style={styles.container}>
         <FormGroup style={{ flex: 1, marginBottom: 0 }}>
           <Label for="exampleFile" style={styles.label}>
-            Upload an audio file to get started
+            Upload an audio file to being generating insights
           </Label>
           <Input
             type="file"
