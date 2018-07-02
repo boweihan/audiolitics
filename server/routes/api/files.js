@@ -4,9 +4,9 @@ let fs = require('fs');
 let formidable = require('formidable');
 let storageService = require('../../services/storageService');
 
-router.get('/', (req, res) => {
+router.get('/analyze', (req, res) => {
   res.sendStatus(200);
-  storageService.getAllFiles();
+  storageService.transcribe();
 });
 
 router.post('/', (req, res) => {
@@ -23,7 +23,7 @@ router.post('/', (req, res) => {
   // rename it to it's original name
   form.on('file', function(field, file) {
     fs.rename(file.path, path.join(form.uploadDir, file.name), () => {});
-    // storageService.uploadFileFromPath(path.join(form.uploadDir, file.name));
+    storageService.uploadFileFromPath(path.join(form.uploadDir, file.name));
   });
 
   // log any errors that occur
