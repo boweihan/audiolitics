@@ -2,34 +2,11 @@ let router = require('express').Router();
 let path = require('path');
 let fs = require('fs');
 let formidable = require('formidable');
-let Storage = require('@google-cloud/storage');
-
-const uploadToCloud = path => {
-  const storage = new Storage();
-  const bucket = storage.bucket('audiolitics-bh');
-
-  bucket.upload(path, { gzip: true }, function(err, file) {
-    // Your bucket now contains:
-    // - "index.html" (automatically compressed with gzip)
-    // Downloading the file with `file.download` will automatically decode the
-    // file.
-    console.log(err);
-  });
-};
-
-const getFilesFromCloud = () => {
-  const storage = new Storage();
-  const bucket = storage.bucket('audiolitics-bh');
-  bucket.getFiles(function(err, files) {
-    if (!err) {
-      console.log(files);
-    }
-  });
-};
+let storageService = require('../../services/storageService');
 
 router.get('/', (req, res) => {
   res.sendStatus(200);
-  // getFilesFromCloud();
+  storageService.getAllFiles();
 });
 
 router.post('/', (req, res) => {
@@ -46,7 +23,7 @@ router.post('/', (req, res) => {
   // rename it to it's original name
   form.on('file', function(field, file) {
     fs.rename(file.path, path.join(form.uploadDir, file.name), () => {});
-    // uploadToCloud(path.join(form.uploadDir, file.name));
+    // storageService.uploadFileFromPath(path.join(form.uploadDir, file.name));
   });
 
   // log any errors that occur

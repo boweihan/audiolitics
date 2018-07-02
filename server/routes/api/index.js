@@ -1,7 +1,7 @@
 let router = require('express').Router();
 
 router.use('/users', require('./users'));
-router.use('/upload', require('./upload'));
+router.use('/files', require('./files'));
 
 // custom api error handling
 router.use(function(err, req, res, next) {
