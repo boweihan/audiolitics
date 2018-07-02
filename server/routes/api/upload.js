@@ -2,8 +2,37 @@ let router = require('express').Router();
 let path = require('path');
 let fs = require('fs');
 let formidable = require('formidable');
+let Storage = require('@google-cloud/storage');
 
-router.post('/', function(req, res) {
+const uploadToCloud = path => {
+  const storage = new Storage();
+  const bucket = storage.bucket('audiolitics-bh');
+
+  bucket.upload(path, { gzip: true }, function(err, file) {
+    // Your bucket now contains:
+    // - "index.html" (automatically compressed with gzip)
+    // Downloading the file with `file.download` will automatically decode the
+    // file.
+    console.log(err);
+  });
+};
+
+const getFilesFromCloud = () => {
+  const storage = new Storage();
+  const bucket = storage.bucket('audiolitics-bh');
+  bucket.getFiles(function(err, files) {
+    if (!err) {
+      console.log(files);
+    }
+  });
+};
+
+router.get('/', (req, res) => {
+  res.sendStatus(200);
+  // getFilesFromCloud();
+});
+
+router.post('/', (req, res) => {
   // create an incoming form object
   let form = new formidable.IncomingForm();
 
@@ -14,9 +43,10 @@ router.post('/', function(req, res) {
   form.uploadDir = path.join(__dirname, '../../../uploads');
 
   // every time a file has been uploaded successfully,
-  // rename it to it's orignal name
+  // rename it to it's original name
   form.on('file', function(field, file) {
     fs.rename(file.path, path.join(form.uploadDir, file.name), () => {});
+    // uploadToCloud(path.join(form.uploadDir, file.name));
   });
 
   // log any errors that occur
