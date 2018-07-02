@@ -4,7 +4,7 @@
   "description": "Audio analytics for content creators and aggregators",
   "main": "server/app.js",
   "scripts": {
-    "start": "node server/app.js",
+    "start": "nodemon server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,5 +20,8 @@
   "dependencies": {
     "express": "^4.16.3",
     "formidable": "^1.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.5"
   }
 }
