@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import rest from '../helpers/rest';
+import PropTypes from 'prop-types';
+import { PacmanLoader } from 'react-spinners';
 
 const styles = {
   container: {
@@ -8,6 +10,8 @@ const styles = {
     backgroundColor: '#1f282e',
     margin: 10,
     borderRadius: 3,
+    display: 'flex',
+    alignItems: 'center',
   },
   label: {
     color: 'white',
@@ -16,10 +20,14 @@ const styles = {
     color: 'lightgray',
     fontSize: '1em',
   },
+  formText: {
+    marginTop: 10,
+    fontSize: '1em',
+  },
 };
 
 class FileUpload extends PureComponent {
-  uploadFile = e => {
+  uploadFile = async e => {
     let files = e.target.files;
 
     if (files.length > 0) {
@@ -29,14 +37,16 @@ class FileUpload extends PureComponent {
         formData.append('uploads[]', file, file.name);
       }
 
-      rest.post('/api/files', null, formData);
+      this.props.startUpload();
+      let resp = await rest.post('/api/files', null, formData);
+      this.props.finishUpload(resp);
     }
   };
 
   render() {
     return (
       <Form style={styles.container}>
-        <FormGroup>
+        <FormGroup style={{ flex: 1, marginBottom: 0 }}>
           <Label for="exampleFile" style={styles.label}>
             Upload an audio file to get started
           </Label>
@@ -51,9 +61,18 @@ class FileUpload extends PureComponent {
             Valid formats are .raw, .flac, .mp3
           </FormText>
         </FormGroup>
+        <div style={{ flex: 1 }}>
+          <PacmanLoader color="white" loading={this.props.loading} />
+        </div>
       </Form>
     );
   }
 }
+
+FileUpload.propTypes = {
+  finishUpload: PropTypes.func.isRequired,
+  startUpload: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
+};
 
 export default FileUpload;

@@ -34,7 +34,8 @@
     "multiparty": "^4.1.4",
     "npm": "^6.1.0",
     "passport": "^0.4.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "react-spinners": "^0.3.2"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.5",

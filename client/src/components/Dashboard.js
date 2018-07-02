@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Container, Row, Col } from 'reactstrap';
+import PropTypes from 'prop-types';
 
 import Bubble from './Bubble';
 
@@ -18,37 +19,29 @@ const styles = {
 
 class Dashboard extends PureComponent {
   render() {
+    let className = this.props.singleFileResponse ? '' : 'flash';
     return (
       <Container style={styles.container}>
         <Row>
-          <Col style={styles.column}>
+          <Col style={styles.column} className={className}>
             <Bubble />
           </Col>
-          <Col style={styles.column}>
+          <Col style={styles.column} className={className}>
             <Bubble />
           </Col>
-          <Col style={styles.column}>
+          <Col style={styles.column} className={className}>
             <Bubble />
           </Col>
-          <Col style={styles.column}>
+          <Col style={styles.column} className={className}>
             <Bubble />
           </Col>
-          <Col style={styles.column}>
+          <Col style={styles.column} className={className}>
             <Bubble />
           </Col>
-          <Col style={styles.column}>
+          <Col style={styles.column} className={className}>
             <Bubble />
           </Col>
-          <Col style={styles.column}>
-            <Bubble />
-          </Col>
-          <Col style={styles.column}>
-            <Bubble />
-          </Col>
-          <Col style={styles.column}>
-            <Bubble />
-          </Col>
-          <Col style={styles.column}>
+          <Col style={styles.column} className={className}>
             <Bubble />
           </Col>
         </Row>
@@ -56,5 +49,9 @@ class Dashboard extends PureComponent {
     );
   }
 }
+
+Dashboard.propTypes = {
+  singleFileResponse: PropTypes.object,
+};
 
 export default Dashboard;
