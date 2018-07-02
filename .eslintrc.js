@@ -1,10 +1,11 @@
 module.exports = {
   parser: 'babel-eslint',
-  extends: 'google',
+  extends: ['plugin:react/recommended', 'google'],
   env: {
     browser: true,
     es6: true,
   },
+  plugins: ['react'],
   rules: {
     'object-curly-spacing': 'off',
     quotes: 'off',
@@ -12,5 +13,6 @@ module.exports = {
     'max-len': 'off',
     'arrow-parens': 'off',
     'no-invalid-this': 'off',
+    'require-jsdoc': 'off',
   },
 };

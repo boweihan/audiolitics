@@ -11,7 +11,7 @@ let isProduction = process.env.NODE_ENV === 'production';
 // create app object
 let app = express();
 
-app.use(express.static(path.join(__dirname, '../client')));
+app.use(express.static(path.join(__dirname, '../client/build')));
 
 // Normal express config defaults
 app.use(cors());
@@ -88,10 +88,10 @@ app.use(function(err, req, res, next) {
 
 // server client
 app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname, 'client/index.html'));
+  res.sendFile(path.join(__dirname, 'client/build/index.html'));
 });
 
 // finally, let's start our server...
-let server = app.listen(process.env.PORT || 3000, function() {
+let server = app.listen(process.env.PORT || 3001, function() {
   console.log('Listening on port ' + server.address().port);
 });
