@@ -8,21 +8,22 @@ const styles = {
     width: '100%',
     borderRadius: 5,
     color: 'white',
+    marginBottom: 0,
   },
   text: {
     lineHeight: '1.5em',
     fontSize: '0.8em',
-    maxHeight: 500,
+    maxHeight: 300,
     overflowY: 'scroll',
     marginBottom: 0,
   },
 };
 
-class BarGraph extends PureComponent {
+class TextChart extends PureComponent {
   render() {
     return (
       <Jumbotron style={styles.container}>
-        <h3>Text</h3>
+        <h3>TRANSCRIPT</h3>
         <hr className="my-2" />
         <p style={styles.text}>{this.props.text}</p>
         <hr className="my-2" />
@@ -31,8 +32,8 @@ class BarGraph extends PureComponent {
   }
 }
 
-BarGraph.propTypes = {
+TextChart.propTypes = {
   text: PropTypes.string.isRequired,
 };
 
-export default BarGraph;
+export default TextChart;

@@ -2,15 +2,23 @@ import React, { PureComponent } from 'react';
 import { Container, Row, Col } from 'reactstrap';
 import PropTypes from 'prop-types';
 import EmptyDashboard from './EmptyDashboard';
-import BarGraph from './BarGraph';
+import BarChart from './BarChart';
 import TextChart from './TextChart';
+import AreaChart from './AreaChart';
+import PieChart from './PieChart';
 
 const styles = {
+  container: {
+    maxWidth: '100%',
+  },
   column: {
     minWidth: 'calc(30vw - 40px)',
     margin: 10,
     paddingRight: 0,
     paddingLeft: 0,
+  },
+  row: {
+    minHeight: 300,
   },
 };
 
@@ -19,12 +27,20 @@ class Dashboard extends PureComponent {
     let response = this.props.singleFileResponse;
     return response ? (
       <Container style={styles.container}>
-        <Row>
+        <Row style={styles.row}>
           <Col style={styles.column}>
             <TextChart text={response.transcription} />
           </Col>
           <Col style={styles.column}>
-            <BarGraph />
+            <BarChart />
+          </Col>
+        </Row>
+        <Row style={styles.row}>
+          <Col style={styles.column}>
+            <AreaChart />
+          </Col>
+          <Col style={styles.column}>
+            <PieChart />
           </Col>
         </Row>
       </Container>
