@@ -9,7 +9,7 @@ passport.use(
       usernameField: 'user[email]',
       passwordField: 'user[password]',
     },
-    function(email, password, done) {
+    (email, password, done) => {
       User.findOne({ email: email })
         .then(function(user) {
           if (!user || !user.validPassword(password)) {

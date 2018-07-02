@@ -1,13 +1,10 @@
-let http = require('http'),
-  path = require('path'),
-  methods = require('methods'),
-  express = require('express'),
-  bodyParser = require('body-parser'),
-  session = require('express-session'),
-  cors = require('cors'),
-  passport = require('passport'),
-  errorhandler = require('errorhandler'),
-  mongoose = require('mongoose');
+let path = require('path');
+let express = require('express');
+let bodyParser = require('body-parser');
+let session = require('express-session');
+let cors = require('cors');
+let errorhandler = require('errorhandler');
+let mongoose = require('mongoose');
 
 let isProduction = process.env.NODE_ENV === 'production';
 
@@ -17,6 +14,7 @@ let app = express();
 app.use(express.static(path.join(__dirname, '../client')));
 
 // Normal express config defaults
+app.use(cors());
 app.use(require('morgan')('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -48,11 +46,11 @@ if (isProduction) {
 require('./models/User');
 
 // middleware
-require('./config/passport');
+require('./middleware/passport');
 
 app.use(require('./routes'));
 
-/// catch 404 and forward to error handler
+// catch 404 and forward to error handler
 app.use(function(req, res, next) {
   let err = new Error('Not Found');
   err.status = 404;
@@ -86,6 +84,11 @@ app.use(function(err, req, res, next) {
       error: {},
     },
   });
+});
+
+// server client
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname, 'client/index.html'));
 });
 
 // finally, let's start our server...

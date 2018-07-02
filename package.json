@@ -33,6 +33,10 @@
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
-    "nodemon": "^1.17.5"
+    "babel-eslint": "^8.2.5",
+    "eslint": "^5.0.1",
+    "eslint-config-google": "^0.9.1",
+    "nodemon": "^1.17.5",
+    "prettier": "^1.13.7"
   }
 }

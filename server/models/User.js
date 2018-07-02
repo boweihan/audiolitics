@@ -32,21 +32,21 @@ let UserSchema = new mongoose.Schema(
 
 UserSchema.plugin(uniqueValidator, { message: 'is already taken.' });
 
-UserSchema.methods.setPassword = function(password) {
+UserSchema.methods.setPassword = password => {
   this.salt = crypto.randomBytes(16).toString('hex');
   this.hash = crypto
     .pbkdf2Sync(password, this.salt, 10000, 512, 'sha512')
     .toString('hex');
 };
 
-UserSchema.methods.validPassword = function(password) {
+UserSchema.methods.validPassword = password => {
   let hash = crypto
     .pbkdf2Sync(password, this.salt, 10000, 512, 'sha512')
     .toString('hex');
   return this.hash === hash;
 };
 
-UserSchema.methods.generateJWT = function() {
+UserSchema.methods.generateJWT = () => {
   let today = new Date();
   let exp = new Date(today);
   exp.setDate(today.getDate() + 60);
@@ -61,7 +61,7 @@ UserSchema.methods.generateJWT = function() {
   );
 };
 
-UserSchema.methods.toAuthJSON = function() {
+UserSchema.methods.toAuthJSON = () => {
   return {
     username: this.username,
     email: this.email,
