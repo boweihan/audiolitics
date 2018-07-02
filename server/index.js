@@ -1,45 +1,94 @@
-var express = require('express');
-var app = express();
-var path = require('path');
-var formidable = require('formidable');
-var fs = require('fs');
+let http = require('http'),
+  path = require('path'),
+  methods = require('methods'),
+  express = require('express'),
+  bodyParser = require('body-parser'),
+  session = require('express-session'),
+  cors = require('cors'),
+  passport = require('passport'),
+  errorhandler = require('errorhandler'),
+  mongoose = require('mongoose');
+
+let isProduction = process.env.NODE_ENV === 'production';
+
+// create app object
+let app = express();
 
 app.use(express.static(path.join(__dirname, '../client')));
 
-app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname, 'client/index.html'));
+// Normal express config defaults
+app.use(require('morgan')('dev'));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+app.use(require('method-override')());
+
+app.use(
+  session({
+    secret: 'conduit',
+    cookie: { maxAge: 60000 },
+    resave: false,
+    saveUninitialized: false,
+  }),
+);
+
+// initialize error handler in production
+if (!isProduction) {
+  app.use(errorhandler());
+}
+
+// mongo settings
+if (isProduction) {
+  mongoose.connect(process.env.MONGODB_URI);
+} else {
+  mongoose.connect('mongodb://localhost/conduit');
+  mongoose.set('debug', true);
+}
+// models
+require('./models/User');
+
+// middleware
+require('./config/passport');
+
+app.use(require('./routes'));
+
+/// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  let err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
-app.post('/upload', function(req, res) {
-  // create an incoming form object
-  var form = new formidable.IncomingForm();
+// development error handler
+// will print stacktrace
+if (!isProduction) {
+  app.use(function(err, req, res, next) {
+    console.log(err.stack);
 
-  // specify that we want to allow the user to upload multiple files in a single request
-  form.multiples = true;
+    res.status(err.status || 500);
 
-  // store all uploads in the /uploads directory
-  form.uploadDir = path.join(__dirname, '/uploads');
-
-  // every time a file has been uploaded successfully,
-  // rename it to it's orignal name
-  form.on('file', function(field, file) {
-    fs.rename(file.path, path.join(form.uploadDir, file.name));
+    res.json({
+      errors: {
+        message: err.message,
+        error: err,
+      },
+    });
   });
+}
 
-  // log any errors that occur
-  form.on('error', function(err) {
-    console.log('An error has occured: \n' + err);
+// production error handler
+// no stacktraces leaked to user
+app.use(function(err, req, res, next) {
+  res.status(err.status || 500);
+  res.json({
+    errors: {
+      message: err.message,
+      error: {},
+    },
   });
-
-  // once all the files have been uploaded, send a response to the client
-  form.on('end', function() {
-    res.end('success');
-  });
-
-  // parse the incoming request containing the form data
-  form.parse(req);
 });
 
-var server = app.listen(3000, function() {
-  console.log('Server listening on port 3000');
+// finally, let's start our server...
+let server = app.listen(process.env.PORT || 3000, function() {
+  console.log('Listening on port ' + server.address().port);
 });
