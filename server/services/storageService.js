@@ -50,7 +50,6 @@ const transcribeCloudFiles = () => {
   bucket.getFiles((err, files) => {
     if (!err) {
       for (let i = 0; i < files.length; i++) {
-        console.log(files[i]);
         if (files[i].name === 'mp3test2.flac') {
           files[i].download((err, contents) => {});
         }
@@ -85,7 +84,6 @@ const transcribeContents = contents => {
   client
     .recognize(request)
     .then(data => {
-      console.log('GOT DATA');
       const response = data[0];
       const transcription = response.results
         .map(result => result.alternatives[0].transcript)

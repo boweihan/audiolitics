@@ -2,11 +2,6 @@ let router = require('express').Router();
 let multiparty = require('multiparty');
 let storageService = require('../../services/storageService');
 
-router.get('/analyze', (req, res) => {
-  res.sendStatus(200);
-  storageService.transcribe();
-});
-
 router.post('/', (req, res) => {
   let form = new multiparty.Form();
 
