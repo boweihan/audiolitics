@@ -16,12 +16,19 @@ const mostUsedWords = text => {
   let hash = buildWordHash(text);
   let totalWords = [];
   for (let key of Object.keys(hash)) {
-    totalWords.push({ name: key, amt: hash[key] });
+    totalWords.push({ word: key, count: hash[key] });
   }
   totalWords.sort((a, b) => {
-    return a.amt < b.amt;
+    if (a.count > b.count) {
+      return -1;
+    } else if (a.count < b.count) {
+      return 1;
+    }
+    return 0;
   });
-  return totalWords.slice(0, 5);
+  let returnVal = totalWords.slice(0, 5);
+  console.log(totalWords);
+  return returnVal;
 };
 
 const buildSingleFileAnalytics = transcription => {

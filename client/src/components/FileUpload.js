@@ -36,7 +36,6 @@ class FileUpload extends PureComponent {
         let file = files[i];
         formData.append('uploads[]', file, file.name);
       }
-
       this.props.startUpload();
       let resp = await rest.post('/api/files', null, formData);
       this.props.finishUpload(resp);
@@ -48,7 +47,7 @@ class FileUpload extends PureComponent {
       <Form style={styles.container}>
         <FormGroup style={{ flex: 1, marginBottom: 0 }}>
           <Label for="exampleFile" style={styles.label}>
-            Upload an audio file to being generating insights
+            Upload an audio file to begin generating insights
           </Label>
           <Input
             type="file"
