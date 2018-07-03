@@ -1,5 +1,6 @@
 let Storage = require('@google-cloud/storage');
 const speech = require('@google-cloud/speech').v1p1beta1;
+const language = require('@google-cloud/language');
 
 const uploadFileFromPath = path => {
   const storage = new Storage();
@@ -93,10 +94,79 @@ const transcribeContents = contents => {
   });
 };
 
+analyzeSentiment = text => {
+  const client = new language.LanguageServiceClient();
+  const doc = {
+    content: text,
+    type: 'PLAIN_TEXT',
+  };
+
+  return new Promise((res, rej) => {
+    client
+      .analyzeSentiment({ document: doc })
+      .then(results => {
+        const sentiment = results[0].documentSentiment;
+        res(sentiment);
+        console.log(`Text: ${text}`);
+        console.log(`Sentiment score: ${sentiment.score}`);
+        console.log(`Sentiment magnitude: ${sentiment.magnitude}`);
+      })
+      .catch(err => {
+        rej(err);
+      });
+  });
+};
+
+analyzeSyntax = text => {
+  const client = new language.LanguageServiceClient();
+  const doc = {
+    content: text,
+    type: 'PLAIN_TEXT',
+  };
+  return new Promise((res, rej) => {
+    client
+      .analyzeSyntax({ document: doc })
+      .then(responses => {
+        let response = responses[0];
+        res(response);
+      })
+      .catch(err => {
+        rej(err);
+      });
+  });
+};
+
+classifyText = text => {
+  const client = new language.LanguageServiceClient();
+  const doc = {
+    content: text,
+    type: 'PLAIN_TEXT',
+  };
+  return new Promise((res, rej) => {
+    client
+      .classifyText({ document: doc })
+      .then(results => {
+        const classification = results[0];
+        res(classification);
+        classification.categories.forEach(category => {
+          console.log(
+            `Name: ${category.name}, Confidence: ${category.confidence}`,
+          );
+        });
+      })
+      .catch(err => {
+        rej(err);
+      });
+  });
+};
+
 module.exports = {
   uploadFileFromPath,
   uploadFileFromBuffer,
   getAllFiles,
   transcribeCloudFiles,
   transcribeContents,
+  analyzeSentiment,
+  analyzeSyntax,
+  classifyText,
 };

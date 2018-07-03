@@ -1,6 +1,6 @@
 let router = require('express').Router();
 let multiparty = require('multiparty');
-let storageService = require('../../services/storageService');
+let gcpService = require('../../services/gcpService');
 let analyticsService = require('../../services/analyticsService');
 
 router.post('/', (req, res) => {
@@ -24,11 +24,11 @@ router.post('/', (req, res) => {
       part.on('end', async () => {
         let buffer = Buffer.concat(buffers);
         res.json(
-          analyticsService.buildSingleFileAnalytics(
-            await storageService.transcribeContents(buffer),
+          await analyticsService.buildSingleFileAnalytics(
+            await gcpService.transcribeContents(buffer),
           ),
         );
-        // storageService.uploadFileFromBuffer(buffer, 'test1');
+        // gcpService.uploadFileFromBuffer(buffer, 'test1');
       });
       part.resume();
     }

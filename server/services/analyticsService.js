@@ -1,3 +1,5 @@
+const gcpService = require('./gcpService');
+
 const buildWordHash = text => {
   let freq = {};
   let arr = text.split(' ');
@@ -26,15 +28,34 @@ const mostUsedWords = text => {
     }
     return 0;
   });
-  let returnVal = totalWords.slice(0, 5);
-  console.log(totalWords);
-  return returnVal;
+  let data = totalWords.slice(0, 5);
+  return data;
 };
 
-const buildSingleFileAnalytics = transcription => {
+const sentiment = async text => {
+  let sentiment = await gcpService.analyzeSentiment(text);
+  let data = [];
+  data.push({ name: 'Sentiment', value: sentiment.score });
+  return data;
+};
+
+const syntax = async text => {
+  let syntax = await gcpService.analyzeSyntax(text);
+  return syntax;
+};
+
+const categories = async text => {
+  let categories = await gcpService.classifyText(text);
+  return categories;
+};
+
+const buildSingleFileAnalytics = async transcription => {
   return {
     transcription,
     mostUsedWords: mostUsedWords(transcription),
+    sentiment: await sentiment(transcription),
+    syntax: await syntax(transcription),
+    categories: await categories(transcription),
   };
 };
 

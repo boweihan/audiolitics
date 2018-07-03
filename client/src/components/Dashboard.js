@@ -25,7 +25,6 @@ const styles = {
 class Dashboard extends PureComponent {
   render() {
     let response = this.props.singleFileResponse;
-    console.log(response);
     return response ? (
       <Container style={styles.container}>
         <Row style={styles.row}>
@@ -38,7 +37,7 @@ class Dashboard extends PureComponent {
         </Row>
         <Row style={styles.row}>
           <Col style={styles.column}>
-            <AreaChart />
+            <AreaChart data={response.sentiment} />
           </Col>
           <Col style={styles.column}>
             <PieChart />
