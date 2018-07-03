@@ -46,7 +46,7 @@ const syntax = async text => {
 
 const categories = async text => {
   let categories = await gcpService.classifyText(text);
-  return categories;
+  return categories.categories;
 };
 
 const buildSingleFileAnalytics = async transcription => {

@@ -27,7 +27,7 @@ class HigherOrderAreaChart extends PureComponent {
           baseValue={-1}
         >
           <XAxis hide={true} dataKey="name" />
-          <YAxis domain={[-1, 1]} />
+          <YAxis stroke="white" domain={[-1, 1]} />
           <Tooltip />
           <defs>
             <linearGradient id="splitColor" x1="0" y1="0" x2="0" y2="1">

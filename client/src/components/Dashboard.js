@@ -6,6 +6,7 @@ import BarChart from './BarChart';
 import TextChart from './TextChart';
 import AreaChart from './AreaChart';
 import PieChart from './PieChart';
+import RadarChart from './RadarChart';
 
 const styles = {
   container: {
@@ -20,6 +21,13 @@ const styles = {
   row: {
     minHeight: 300,
   },
+  title: {
+    position: 'absolute',
+    right: '30px',
+    top: '10px',
+    color: 'white',
+    zIndex: 1000,
+  },
 };
 
 class Dashboard extends PureComponent {
@@ -32,13 +40,21 @@ class Dashboard extends PureComponent {
             <TextChart text={response.transcription} />
           </Col>
           <Col style={styles.column}>
+            <p style={styles.title}>WORD FREQUENCY</p>
             <BarChart data={response.mostUsedWords} />
           </Col>
         </Row>
         <Row style={styles.row}>
           <Col style={styles.column}>
+            <p style={styles.title}>SENTIMENT</p>
             <AreaChart data={response.sentiment} />
           </Col>
+          <Col style={styles.column}>
+            <p style={styles.title}>CATEGORIES</p>
+            <RadarChart data={response.categories} />
+          </Col>
+        </Row>
+        <Row style={styles.row}>
           <Col style={styles.column}>
             <PieChart />
           </Col>
