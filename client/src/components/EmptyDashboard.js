@@ -17,7 +17,8 @@ const styles = {
   },
   column: {
     minWidth: 'calc(30vw - 40px)',
-    margin: 10,
+    minHeight: 300,
+    border: '10px solid #253239',
     paddingRight: 0,
     paddingLeft: 0,
   },
@@ -29,26 +30,26 @@ class EmptyDashboard extends PureComponent {
     return (
       <Container style={styles.container}>
         <Row style={styles.row}>
-          <Col style={styles.column} className={className}>
+          <Col xs="12" sm="6" style={styles.column} className={className}>
             <div style={styles.bubble} />
           </Col>
-          <Col style={styles.column} className={className}>
-            <div style={styles.bubble} />
-          </Col>
-        </Row>
-        <Row style={styles.row}>
-          <Col style={styles.column} className={className}>
-            <div style={styles.bubble} />
-          </Col>
-          <Col style={styles.column} className={className}>
+          <Col xs="12" sm="6" style={styles.column} className={className}>
             <div style={styles.bubble} />
           </Col>
         </Row>
         <Row style={styles.row}>
-          <Col style={styles.column} className={className}>
+          <Col xs="12" sm="6" style={styles.column} className={className}>
             <div style={styles.bubble} />
           </Col>
-          <Col style={styles.column} className={className}>
+          <Col xs="12" sm="6" style={styles.column} className={className}>
+            <div style={styles.bubble} />
+          </Col>
+        </Row>
+        <Row style={styles.row}>
+          <Col xs="12" sm="6" style={styles.column} className={className}>
+            <div style={styles.bubble} />
+          </Col>
+          <Col xs="12" sm="6" style={styles.column} className={className}>
             <div style={styles.bubble} />
           </Col>
         </Row>

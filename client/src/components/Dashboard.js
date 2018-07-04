@@ -6,7 +6,6 @@ import EmptyDashboard from './EmptyDashboard';
 import BarChart from './BarChart';
 import TextChart from './TextChart';
 import AreaChart from './AreaChart';
-import PieChart from './PieChart';
 import RadarChart from './RadarChart';
 import SingleValueChart from './SingleValueChart';
 
@@ -16,18 +15,19 @@ const styles = {
   },
   column: {
     minWidth: 'calc(30vw - 40px)',
-    margin: 10,
+    border: '10px solid #253239',
     paddingRight: 0,
     paddingLeft: 0,
+    paddingTop: 30,
+    minHeight: 300,
   },
   row: {
     minHeight: 300,
-    paddingTop: 30,
   },
   title: {
     position: 'absolute',
     right: '0px',
-    top: '-40px',
+    top: '-10px',
     height: 40,
     padding: '10px 20px',
     backgroundColor: '#323E47',
@@ -48,11 +48,11 @@ class Dashboard extends PureComponent {
     return response ? (
       <Container style={styles.container} className="bounceIn">
         <Row style={styles.row}>
-          <Col style={styles.column}>
+          <Col xs="12" sm="6" style={styles.column}>
             <p style={styles.title}>TRANSCRIPTION</p>
             <TextChart text={response.transcription} />
           </Col>
-          <Col style={styles.column}>
+          <Col xs="12" sm="6" style={styles.column}>
             <p style={styles.title}>SPEECH RATE</p>
             <SingleValueChart
               text={util.getWPM(duration, response.transcription)}
@@ -60,21 +60,21 @@ class Dashboard extends PureComponent {
           </Col>
         </Row>
         <Row style={styles.row}>
-          <Col style={styles.column}>
+          <Col xs="12" sm="6" style={styles.column}>
             <p style={styles.title}>MOST FREQUENT WORDS</p>
             <BarChart data={response.mostUsedWords} />
           </Col>
-          <Col style={styles.column}>
+          <Col xs="12" sm="6" style={styles.column}>
             <p style={styles.title}>SENTIMENT</p>
             <AreaChart data={response.sentiment} />
           </Col>
         </Row>
         <Row style={styles.row}>
-          <Col style={styles.column}>
+          <Col xs="12" sm="6" style={styles.column}>
             <p style={styles.title}>CATEGORIES</p>
             <RadarChart data={response.categories} />
           </Col>
-          <Col style={styles.column}>
+          <Col xs="12" sm="6" style={styles.column}>
             <p style={styles.title}>MENTIONED ENTITIES</p>
             <TextChart text={response.entities.join(', ')} />
           </Col>

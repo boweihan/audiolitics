@@ -7,7 +7,7 @@ import { ScaleLoader } from 'react-spinners';
 const styles = {
   container: {
     padding: 20,
-    height: 150,
+    height: 200,
     backgroundColor: '#1f282e',
     margin: 10,
     borderRadius: 3,
