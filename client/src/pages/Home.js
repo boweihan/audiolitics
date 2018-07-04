@@ -19,11 +19,13 @@ class Home extends Component {
   // store all app state here for now
   state = {
     route: 'main',
-    // singleFileResponse: null,
-    singleFileResponse: {
-      transcription: 'boop',
-    },
+    singleFileResponse: null,
+    // singleFileResponse: {
+    //   transcription:
+    //     'boopboop boopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboop',
+    // },
     singleFileLoading: false,
+    singleFileDuration: null,
   };
 
   setRoute = route => {
@@ -41,8 +43,19 @@ class Home extends Component {
     });
   };
 
+  setDuration = duration => {
+    this.setState({
+      singleFileDuration: duration,
+    });
+  };
+
   render() {
-    const { route, singleFileResponse, singleFileLoading } = this.state;
+    const {
+      route,
+      singleFileResponse,
+      singleFileLoading,
+      singleFileDuration,
+    } = this.state;
     return (
       <div style={styles.app}>
         <NavBar setRoute={this.setRoute} />
@@ -50,11 +63,16 @@ class Home extends Component {
           <FileUpload
             finishUpload={this.finishUpload}
             startUpload={this.startUpload}
+            setDuration={this.setDuration}
             loading={singleFileLoading}
           />
         )}
         {route === 'main' && (
-          <Dashboard singleFileResponse={singleFileResponse} />
+          <Dashboard
+            singleFileResponse={singleFileResponse}
+            duration={singleFileDuration}
+            loading={singleFileLoading}
+          />
         )}
         {route === 'login' && <Login />}
       </div>

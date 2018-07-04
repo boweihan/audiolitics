@@ -26,6 +26,7 @@ const styles = {
   container: {
     backgroundColor: '#323E47',
     borderRadius: 5,
+    borderTopRightRadius: 0,
   },
 };
 
@@ -36,6 +37,8 @@ class HigherOrderPieChart extends PureComponent {
         <PieChart style={styles.container}>
           <Pie
             data={data01}
+            dataKey="value"
+            nameKEy="name"
             cx="50%"
             cy="50%"
             outerRadius={60}
@@ -43,6 +46,8 @@ class HigherOrderPieChart extends PureComponent {
           />
           <Pie
             data={data02}
+            dataKey="value"
+            nameKEy="name"
             cx="50%"
             cy="50%"
             innerRadius={70}

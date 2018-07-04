@@ -14,6 +14,7 @@ const styles = {
   container: {
     backgroundColor: '#323E47',
     borderRadius: 5,
+    borderTopRightRadius: 0,
     color: 'white',
   },
 };
@@ -41,7 +42,7 @@ class HigherOrderRadarChart extends PureComponent {
 }
 
 HigherOrderRadarChart.propTypes = {
-  data: PropTypes.object,
+  data: PropTypes.array,
 };
 
 export default HigherOrderRadarChart;

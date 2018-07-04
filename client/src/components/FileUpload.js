@@ -27,14 +27,26 @@ const styles = {
 };
 
 class FileUpload extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.audioRef = React.createRef();
+    this.state = {
+      audioSrc: null,
+    };
+  }
+
   uploadFile = async e => {
     let files = e.target.files;
-
     if (files.length > 0) {
       let formData = new FormData();
       for (let i = 0; i < files.length; i++) {
         let file = files[i];
         formData.append('uploads[]', file, file.name);
+      }
+      // get a duration for the audio file
+      if (files[0].name.match(/\.(avi|mp3|mp4|mpeg|ogg|flac|wav)$/i)) {
+        let obUrl = URL.createObjectURL(files[0]);
+        this.setState({ audioSrc: obUrl });
       }
       this.props.startUpload();
       let resp = await rest.post('/api/files', null, formData);
@@ -42,28 +54,42 @@ class FileUpload extends PureComponent {
     }
   };
 
+  handleAudioLoad = e => {
+    const duration = Math.round(e.currentTarget.duration);
+    this.props.setDuration(duration);
+    URL.revokeObjectURL(this.state.audioSrc);
+  };
+
   render() {
     return (
-      <Form style={styles.container}>
-        <FormGroup style={{ flex: 1, marginBottom: 0 }}>
-          <Label for="exampleFile" style={styles.label}>
-            Upload an audio file to begin generating insights
-          </Label>
-          <Input
-            type="file"
-            name="file"
-            id="fileUpload"
-            style={styles.input}
-            onChange={this.uploadFile}
-          />
-          <FormText color="muted" style={styles.formText}>
-            Valid formats are .raw, .flac, .mp3
-          </FormText>
-        </FormGroup>
-        <div style={{ flex: 1 }}>
-          <PacmanLoader color="white" loading={this.props.loading} />
-        </div>
-      </Form>
+      <div>
+        <Form style={styles.container}>
+          <FormGroup style={{ flex: 1, marginBottom: 0 }}>
+            <Label for="exampleFile" style={styles.label}>
+              Upload an audio file to begin generating insights
+            </Label>
+            <Input
+              type="file"
+              name="file"
+              id="fileUpload"
+              style={styles.input}
+              onChange={this.uploadFile}
+            />
+            <FormText color="muted" style={styles.formText}>
+              Valid formats are .raw, .flac, .mp3
+            </FormText>
+          </FormGroup>
+          <div style={{ flex: 1 }}>
+            <PacmanLoader color="white" loading={this.props.loading} />
+          </div>
+        </Form>
+        <audio
+          id="audio"
+          onCanPlayThrough={this.handleAudioLoad}
+          src={this.state.audioSrc}
+          ref={this.audioRef}
+        />
+      </div>
     );
   }
 }
@@ -71,6 +97,7 @@ class FileUpload extends PureComponent {
 FileUpload.propTypes = {
   finishUpload: PropTypes.func.isRequired,
   startUpload: PropTypes.func.isRequired,
+  setDuration: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
 };
 

@@ -12,36 +12,27 @@ const styles = {
     color: 'white',
     marginBottom: 0,
     display: 'flex',
-    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   text: {
-    flex: 1,
-    lineHeight: '1.5em',
-    fontSize: '0.8em',
-    maxHeight: 300,
-    overflowY: 'scroll',
-    marginBottom: 0,
-    wordWrap: 'break-word',
-  },
-  title: {
-    wordWrap: 'break-word',
+    textAlign: 'center',
+    fontSize: '7vw',
   },
 };
 
-class TextChart extends PureComponent {
+class SingleValueChart extends PureComponent {
   render() {
     return (
       <Jumbotron style={styles.container}>
-        <hr className="my-2" />
-        <p style={styles.text}>{this.props.text}</p>
-        <hr className="my-2" />
+        <h3 style={styles.text}>115 WPM</h3>
       </Jumbotron>
     );
   }
 }
 
-TextChart.propTypes = {
+SingleValueChart.propTypes = {
   text: PropTypes.string,
 };
 
-export default TextChart;
+export default SingleValueChart;

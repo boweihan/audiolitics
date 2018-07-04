@@ -1,12 +1,16 @@
 import React, { PureComponent } from 'react';
 import { Container, Row, Col } from 'reactstrap';
+import PropTypes from 'prop-types';
 
 const styles = {
   bubble: {
     backgroundColor: '#323E47',
-    height: 200,
+    height: '100%',
     width: '100%',
-    borderRadius: 3,
+    borderRadius: 5,
+  },
+  row: {
+    minHeight: 300,
   },
   container: {
     maxWidth: '100%',
@@ -19,30 +23,28 @@ const styles = {
   },
 };
 
-class Bubble extends PureComponent {
+class EmptyDashboard extends PureComponent {
   render() {
-    let className;
+    let className = this.props.loading ? 'flash' : '';
     return (
       <Container style={styles.container}>
-        <Row>
+        <Row style={styles.row}>
           <Col style={styles.column} className={className}>
             <div style={styles.bubble} />
           </Col>
           <Col style={styles.column} className={className}>
             <div style={styles.bubble} />
           </Col>
+        </Row>
+        <Row style={styles.row}>
           <Col style={styles.column} className={className}>
             <div style={styles.bubble} />
           </Col>
           <Col style={styles.column} className={className}>
             <div style={styles.bubble} />
           </Col>
-          <Col style={styles.column} className={className}>
-            <div style={styles.bubble} />
-          </Col>
-          <Col style={styles.column} className={className}>
-            <div style={styles.bubble} />
-          </Col>
+        </Row>
+        <Row style={styles.row}>
           <Col style={styles.column} className={className}>
             <div style={styles.bubble} />
           </Col>
@@ -55,4 +57,8 @@ class Bubble extends PureComponent {
   }
 }
 
-export default Bubble;
+EmptyDashboard.propTypes = {
+  loading: PropTypes.bool.isRequired,
+};
+
+export default EmptyDashboard;

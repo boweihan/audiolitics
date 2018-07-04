@@ -6,6 +6,7 @@ const styles = {
   container: {
     backgroundColor: '#323E47',
     borderRadius: 5,
+    borderTopRightRadius: 0,
   },
 };
 
@@ -24,7 +25,7 @@ class HigherOrderBarChart extends PureComponent {
 }
 
 HigherOrderBarChart.propTypes = {
-  data: PropTypes.object,
+  data: PropTypes.array,
 };
 
 export default HigherOrderBarChart;

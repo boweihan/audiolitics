@@ -13,6 +13,7 @@ const styles = {
   container: {
     backgroundColor: '#323E47',
     borderRadius: 5,
+    borderTopRightRadius: 0,
   },
 };
 
@@ -48,7 +49,7 @@ class HigherOrderAreaChart extends PureComponent {
 }
 
 HigherOrderAreaChart.propTypes = {
-  data: PropTypes.object,
+  data: PropTypes.array,
 };
 
 export default HigherOrderAreaChart;
