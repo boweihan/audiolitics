@@ -49,6 +49,15 @@ const categories = async text => {
   return categories.categories;
 };
 
+const entities = async text => {
+  let entities = await gcpService.analyzeEntities(text);
+  let data = [];
+  for (let i = 0; i < entities.length; i++) {
+    data.push(entities[i].name);
+  }
+  return data;
+};
+
 const buildSingleFileAnalytics = async transcription => {
   return {
     transcription,
@@ -56,6 +65,7 @@ const buildSingleFileAnalytics = async transcription => {
     sentiment: await sentiment(transcription),
     syntax: await syntax(transcription),
     categories: await categories(transcription),
+    entities: await entities(transcription),
   };
 };
 

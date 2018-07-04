@@ -75,7 +75,8 @@ class Dashboard extends PureComponent {
             <RadarChart data={response.categories} />
           </Col>
           <Col style={styles.column}>
-            <PieChart />
+            <p style={styles.title}>MENTIONED ENTITIES</p>
+            <TextChart text={response.entities.join(', ')} />
           </Col>
         </Row>
       </Container>

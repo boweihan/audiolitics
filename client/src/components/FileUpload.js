@@ -2,11 +2,12 @@ import React, { PureComponent } from 'react';
 import { Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import rest from '../helpers/rest';
 import PropTypes from 'prop-types';
-import { PacmanLoader } from 'react-spinners';
+import { ScaleLoader } from 'react-spinners';
 
 const styles = {
   container: {
     padding: 20,
+    height: 150,
     backgroundColor: '#1f282e',
     margin: 10,
     borderRadius: 3,
@@ -79,9 +80,29 @@ class FileUpload extends PureComponent {
               Valid formats are .raw, .flac, .mp3
             </FormText>
           </FormGroup>
-          <div style={{ flex: 1 }}>
-            <PacmanLoader color="white" loading={this.props.loading} />
-          </div>
+          {this.props.loading && (
+            <div
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100%',
+                padding: 20,
+              }}
+            >
+              <p style={{ color: 'white', fontSize: '1em', marginBottom: 0 }}>
+                PROCESSING...
+              </p>
+              <p style={{ color: 'white', fontSize: '0.7em' }}>
+                (For large files this may take a while)
+              </p>
+              <ScaleLoader
+                color="white"
+                loading={this.props.loading}
+                style={{ flex: 1 }}
+              />
+            </div>
+          )}
         </Form>
         <audio
           id="audio"

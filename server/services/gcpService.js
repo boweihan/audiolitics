@@ -136,6 +136,25 @@ analyzeSyntax = text => {
   });
 };
 
+analyzeEntities = text => {
+  const client = new language.LanguageServiceClient();
+  const doc = {
+    content: text,
+    type: 'PLAIN_TEXT',
+  };
+  return new Promise((res, rej) => {
+    client
+      .analyzeEntities({ document: doc })
+      .then(results => {
+        const entities = results[0].entities;
+        res(entities);
+      })
+      .catch(err => {
+        rej(err);
+      });
+  });
+};
+
 classifyText = text => {
   const client = new language.LanguageServiceClient();
   const doc = {
@@ -168,5 +187,6 @@ module.exports = {
   transcribeContents,
   analyzeSentiment,
   analyzeSyntax,
+  analyzeEntities,
   classifyText,
 };
