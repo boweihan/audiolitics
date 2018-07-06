@@ -20,16 +20,24 @@ const uploadFileFromBuffer = (buffer, fileName) => {
   const bucket = storage.bucket('audiolitics-bh');
   const file = bucket.file(fileName);
 
-  const stream = file
-    .createWriteStream()
-    .on('error', err => {
-      console.log(err);
-    })
-    .on('finish', () => {
-      file.makePublic().then(() => {});
-    });
+  return new Promise((res, rej) => {
+    const stream = file
+      .createWriteStream({
+        metadata: {
+          contentType: 'audio/x-flac',
+        },
+      })
+      .on('error', err => {
+        rej(err);
+      })
+      .on('finish', () => {
+        file.makePublic().then(() => {
+          res();
+        });
+      });
 
-  stream.end(buffer);
+    stream.end(buffer);
+  });
 };
 
 const getAllFiles = () => {
@@ -81,6 +89,47 @@ const transcribeContents = contents => {
   return new Promise((res, rej) => {
     client
       .recognize(request)
+      .then(data => {
+        const response = data[0];
+        const transcription = response.results
+          .map(result => result.alternatives[0].transcript)
+          .join('\n');
+        res(transcription);
+      })
+      .catch(err => {
+        rej(err);
+      });
+  });
+};
+
+transcribeContentsLong = uri => {
+  const client = new speech.SpeechClient();
+
+  const model = 'default';
+  const languageCode = 'en-US';
+
+  const config = {
+    languageCode: languageCode,
+    model: model,
+  };
+
+  const audio = {
+    uri: uri,
+  };
+
+  const request = {
+    config: config,
+    audio: audio,
+  };
+
+  return new Promise((res, rej) => {
+    client
+      .longRunningRecognize(request)
+      .then(data => {
+        const operation = data[0];
+        // Get a Promise representation of the final result of the job
+        return operation.promise();
+      })
       .then(data => {
         const response = data[0];
         const transcription = response.results
@@ -185,6 +234,7 @@ module.exports = {
   getAllFiles,
   transcribeCloudFiles,
   transcribeContents,
+  transcribeContentsLong,
   analyzeSentiment,
   analyzeSyntax,
   analyzeEntities,

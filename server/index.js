@@ -95,3 +95,5 @@ app.get('/', function(req, res) {
 let server = app.listen(process.env.PORT || 3001, function() {
   console.log('Listening on port ' + server.address().port);
 });
+
+server.setTimeout(2147483647);

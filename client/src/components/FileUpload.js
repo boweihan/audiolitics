@@ -50,8 +50,13 @@ class FileUpload extends PureComponent {
         this.setState({ audioSrc: obUrl });
       }
       this.props.startUpload();
-      let resp = await rest.post('/api/files', null, formData);
-      this.props.finishUpload(resp);
+      try {
+        let resp = await rest.post('/api/files', null, formData);
+        this.props.finishUpload(resp);
+      } catch (e) {
+        console.log(e);
+        this.props.finishUpload(null);
+      }
     }
   };
 
