@@ -2,9 +2,11 @@ let path = require('path');
 let express = require('express');
 let bodyParser = require('body-parser');
 let session = require('express-session');
+let MongoStore = require('connect-mongo')(session);
 let cors = require('cors');
 let errorhandler = require('errorhandler');
 let mongoose = require('mongoose');
+let http = require('http');
 
 let isProduction = process.env.NODE_ENV === 'production';
 
@@ -21,12 +23,21 @@ app.use(bodyParser.json());
 
 app.use(require('method-override')());
 
+// mongo settings
+if (isProduction) {
+  mongoose.connect(process.env.MONGODB_URI);
+} else {
+  mongoose.connect('mongodb://localhost/audiolitics');
+  mongoose.set('debug', true);
+}
+
 app.use(
   session({
-    secret: 'conduit',
-    cookie: { maxAge: 60000 },
-    resave: false,
-    saveUninitialized: false,
+    secret: 'audiolitics',
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
+    cookie: { maxAge: 600000 },
+    resave: true,
+    saveUninitialized: true, // required to save session
   }),
 );
 
@@ -35,13 +46,6 @@ if (!isProduction) {
   app.use(errorhandler());
 }
 
-// mongo settings
-if (isProduction) {
-  mongoose.connect(process.env.MONGODB_URI);
-} else {
-  mongoose.connect('mongodb://localhost/conduit');
-  mongoose.set('debug', true);
-}
 // models
 require('./models/User');
 
@@ -91,9 +95,12 @@ app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'client/build/index.html'));
 });
 
+let server = http.createServer(app);
+
+server.timeout = 600000; // 6 mins.
+server.setTimeout(600000);
+
 // finally, let's start our server...
-let server = app.listen(process.env.PORT || 3001, function() {
+server.listen(process.env.PORT || 3001, function() {
   console.log('Listening on port ' + server.address().port);
 });
-
-server.setTimeout(2147483647);

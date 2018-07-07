@@ -58,7 +58,13 @@ const entities = async text => {
   return data;
 };
 
-const buildSingleFileAnalytics = async transcription => {
+const wpm = (transcription, duration) => {
+  const words = transcription.split(' ').length;
+  const minutes = duration / 60;
+  return `${Math.round(words / minutes)} WPM`;
+};
+
+const buildSingleFileAnalytics = async (transcription, duration) => {
   return {
     transcription,
     mostUsedWords: mostUsedWords(transcription),
@@ -66,6 +72,7 @@ const buildSingleFileAnalytics = async transcription => {
     syntax: await syntax(transcription),
     categories: await categories(transcription),
     entities: await entities(transcription),
+    wpm: wpm(transcription, duration),
   };
 };
 
