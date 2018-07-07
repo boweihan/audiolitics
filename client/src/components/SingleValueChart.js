@@ -25,7 +25,7 @@ class SingleValueChart extends PureComponent {
   render() {
     return (
       <Jumbotron style={styles.container}>
-        <h3 style={styles.text}>115 WPM</h3>
+        <h3 style={styles.text}>{this.props.text}</h3>
       </Jumbotron>
     );
   }

@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const METHOD = {
   GET: 'GET',
   POST: 'POST',
@@ -90,45 +92,43 @@ export default class Rest {
 
     return fetch(route, options)
       .then(async response => {
-        if (response.ok && response.status !== 204) {
-          if (isJSON) {
-            return response.json();
-          }
-          return response.text();
-        } else if (response.ok && response.status === 204) {
-          // do nothing because there's no body
-        } else {
-          throw { ...response, description: await response.text() }; // eslint-disable-line
-        }
+        return response;
       })
       .catch(err => {
         throw err;
       });
   }
 
-  // Verify that this works without JQuery when we implement a feature that uses it
-  static postMultiPartFormData = (
-    url: string,
-    auth: string,
-    bytes: Array<number>,
-    extension: string,
-  ) => {
-    // bytes must be an array so that we can convert to a signed 8 byte array below
-    if (!Array.isArray(bytes)) {
-      throw new Error(
-        'Called postMultiPartFormData with non-byte array, saw "' +
-          typeof bytes +
-          '" instead',
-      );
-    }
+  // axios methods send cookies on each request to leverage express session
+  static getWithAxios = url => {
+    return axios({
+      method: 'get',
+      url: url,
+    })
+      .then(function(response) {
+        return response;
+      })
+      .catch(function(err) {
+        throw err;
+      });
+  };
 
-    let signedBytes = new Int8Array(bytes);
-    let formData = new FormData();
-    let blob = new Blob([signedBytes], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    });
-    formData.append('data', blob, 'jsaddin.' + extension);
-
-    return Rest.post(url, auth, formData);
+  static postWithAxios = (formData, url) => {
+    return axios({
+      method: 'post',
+      url: url,
+      data: formData,
+      config: {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      },
+    })
+      .then(function(response) {
+        return response;
+      })
+      .catch(function(err) {
+        throw err;
+      });
   };
 }

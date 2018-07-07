@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Container, Row, Col } from 'reactstrap';
 import PropTypes from 'prop-types';
-import util from '../helpers/util';
 import EmptyDashboard from './EmptyDashboard';
 import BarChart from './BarChart';
 import TextChart from './TextChart';
@@ -43,7 +42,6 @@ const styles = {
 class Dashboard extends PureComponent {
   render() {
     let response = this.props.singleFileResponse;
-    let duration = this.props.duration;
     let loading = this.props.loading;
     return response ? (
       <Container style={styles.container} className="bounceIn">
@@ -54,9 +52,7 @@ class Dashboard extends PureComponent {
           </Col>
           <Col xs="12" sm="6" style={styles.column}>
             <p style={styles.title}>SPEECH RATE</p>
-            <SingleValueChart
-              text={util.getWPM(duration, response.transcription)}
-            />
+            <SingleValueChart text={response.wpm} />
           </Col>
         </Row>
         <Row style={styles.row}>
@@ -88,7 +84,6 @@ class Dashboard extends PureComponent {
 
 Dashboard.propTypes = {
   singleFileResponse: PropTypes.object,
-  duration: PropTypes.number,
   loading: PropTypes.bool.isRequired,
 };
 

@@ -20,12 +20,8 @@ class Home extends Component {
   state = {
     route: 'main',
     singleFileResponse: null,
-    // singleFileResponse: {
-    //   transcription:
-    //     'boopboop boopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboopboop',
-    // },
     singleFileLoading: false,
-    singleFileDuration: null,
+    singleFileError: null,
   };
 
   setRoute = route => {
@@ -43,9 +39,9 @@ class Home extends Component {
     });
   };
 
-  setDuration = duration => {
+  setError = error => {
     this.setState({
-      singleFileDuration: duration,
+      singleFileError: error,
     });
   };
 
@@ -54,7 +50,7 @@ class Home extends Component {
       route,
       singleFileResponse,
       singleFileLoading,
-      singleFileDuration,
+      singleFileError,
     } = this.state;
     return (
       <div style={styles.app}>
@@ -63,14 +59,14 @@ class Home extends Component {
           <FileUpload
             finishUpload={this.finishUpload}
             startUpload={this.startUpload}
-            setDuration={this.setDuration}
+            setError={this.setError}
+            error={singleFileError}
             loading={singleFileLoading}
           />
         )}
         {route === 'main' && (
           <Dashboard
             singleFileResponse={singleFileResponse}
-            duration={singleFileDuration}
             loading={singleFileLoading}
           />
         )}

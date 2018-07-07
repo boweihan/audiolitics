@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import { Form, FormGroup, Label, Input, FormText, Alert } from 'reactstrap';
 import rest from '../helpers/rest';
 import PropTypes from 'prop-types';
 import { ScaleLoader } from 'react-spinners';
@@ -25,6 +25,12 @@ const styles = {
     marginTop: 10,
     fontSize: '1em',
   },
+  errorBar: {
+    margin: '10px 20px',
+    marginTop: 20,
+    padding: '5px 20px',
+    opacity: 0.8,
+  },
 };
 
 class FileUpload extends PureComponent {
@@ -33,10 +39,12 @@ class FileUpload extends PureComponent {
     this.audioRef = React.createRef();
     this.state = {
       audioSrc: null,
+      formData: null,
     };
   }
 
-  uploadFile = async e => {
+  handleUpload = async e => {
+    this.props.setError(null); // reset error
     let files = e.target.files;
     if (files.length > 0) {
       let formData = new FormData();
@@ -47,23 +55,45 @@ class FileUpload extends PureComponent {
       // get a duration for the audio file
       if (files[0].name.match(/\.(avi|mp3|mp4|mpeg|ogg|flac|wav)$/i)) {
         let obUrl = URL.createObjectURL(files[0]);
-        this.setState({ audioSrc: obUrl });
-      }
-      this.props.startUpload();
-      try {
-        let resp = await rest.post('/api/files', null, formData);
-        this.props.finishUpload(resp);
-      } catch (e) {
-        console.log(e);
-        this.props.finishUpload(null);
+        this.setState({ audioSrc: obUrl, formData });
+      } else {
+        this.props.setError('Please upload a valid audio file');
       }
     }
   };
 
   handleAudioLoad = e => {
     const duration = Math.round(e.currentTarget.duration);
-    this.props.setDuration(duration);
+    this.uploadFile(duration);
     URL.revokeObjectURL(this.state.audioSrc);
+  };
+
+  uploadFile = async duration => {
+    this.props.startUpload();
+    try {
+      let response = await rest.postWithAxios(
+        this.state.formData,
+        `/api/files?duration=${duration}`,
+      );
+      if (response && response.status === 204) {
+        let pollForResult = () => {
+          setTimeout(async () => {
+            let response = await rest.getWithAxios('api/files');
+            if (response && response.status === 204) {
+              pollForResult();
+            } else if (response && response.status === 200) {
+              this.props.finishUpload(response.data);
+            }
+          }, 5000);
+        };
+        pollForResult();
+      } else if (response && response.status === 200) {
+        this.props.finishUpload(response.data);
+      }
+    } catch (e) {
+      this.props.finishUpload(null);
+      this.props.setError(e.response.data);
+    }
   };
 
   render() {
@@ -79,10 +109,10 @@ class FileUpload extends PureComponent {
               name="file"
               id="fileUpload"
               style={styles.input}
-              onChange={this.uploadFile}
+              onChange={this.handleUpload}
             />
             <FormText color="muted" style={styles.formText}>
-              Valid formats are .raw, .flac, .mp3
+              For best performance, upload a .flac file
             </FormText>
           </FormGroup>
           {this.props.loading && (
@@ -99,7 +129,8 @@ class FileUpload extends PureComponent {
                 PROCESSING...
               </p>
               <p style={{ color: 'white', fontSize: '0.7em' }}>
-                (For large files this may take a while)
+                (This may take a while for larger files or files that must be
+                decoded (i.e. mp3, mp4))
               </p>
               <ScaleLoader
                 color="white"
@@ -109,6 +140,11 @@ class FileUpload extends PureComponent {
             </div>
           )}
         </Form>
+        {this.props.error && (
+          <Alert color="danger" style={styles.errorBar}>
+            {this.props.error}
+          </Alert>
+        )}
         <audio
           id="audio"
           onCanPlayThrough={this.handleAudioLoad}
@@ -123,8 +159,9 @@ class FileUpload extends PureComponent {
 FileUpload.propTypes = {
   finishUpload: PropTypes.func.isRequired,
   startUpload: PropTypes.func.isRequired,
-  setDuration: PropTypes.func.isRequired,
+  setError: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
+  error: PropTypes.string,
 };
 
 export default FileUpload;
